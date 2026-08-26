@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { env } from 'node:process';
 
 test('Авторизация на сайте', async ({ page }) => {
   // Открываем страницу авторизации.
@@ -8,10 +9,10 @@ test('Авторизация на сайте', async ({ page }) => {
   await expect(page.getByText('Добро пожаловать', { exact: true })).toBeVisible();
 
   // Заполняем поле логина или электронной почты.
-  await page.getByRole('textbox', { name: 'Логин или e-mail' }).fill(process.env.APP_USER!);
+  await page.getByRole('textbox', { name: 'Логин или e-mail' }).fill(env.APP_USER!);
 
   // Заполняем поле пароля.
-  await page.getByRole('textbox', { name: 'Пароль' }).fill(process.env.APP_PASSWORD!);
+  await page.getByRole('textbox', { name: 'Пароль' }).fill(env.APP_PASSWORD!);
 
   // Нажимаем "Вход".
   await page.getByRole('button', { name: 'Вход' }).click();
