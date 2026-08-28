@@ -3,27 +3,32 @@ import { env } from 'node:process';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+//Делаем константами ссылки на страницы, чтобы не дублировать их в коде тестов.
+const loginUrl = 'https://forpasha.app.pryaniky.com/login';
+const dashboardUrl = 'https://forpasha.app.pryaniky.com/dash';
 
 //Ставим последовательный запуск тестов в текущем файле.
 test.describe.configure({ mode: 'serial' });
 
+//Указываем, что перед каждым тестом нужно открывать страницу логина и проверять, что на ней отображается приветствие.
 test.beforeEach(async ({ page }) => {
   await page.goto('https://forpasha.app.pryaniky.com/login');
   await expect(page.getByText('Добро пожаловать', { exact: true })).toBeVisible();
 });
 
 test.describe('Проверка наличия элементов на странице', () => {
+  //Проверяем наличие кнопки "Восстановить пароль".
   test('Наличие кнопки Восстановить пароль', async ({ page }) => {
     await expect(page.getByRole('link', { name: 'Восстановить пароль' })).toBeVisible();
   });
-
+  //Проверяем наличие кнопки смены языка.
   test('Наличие кнопки смены языка', async ({ page }) => {
     await expect(page.getByRole('button', { name: 'Русский' })).toBeVisible();
   });
 });
-
+//Проверяем смену языка на английский и обратно на русский.
 test.describe('Проверка смены языка', () => {
-  test('Проверка смены языка на английский', async ({ page }) => {
+  test('С русского языка на английский', async ({ page }) => {
     // Открываем список доступных языков.
     await expect(page.getByRole('button', { name: 'Русский' })).toBeVisible();
     await page.getByRole('button', { name: 'Русский' }).click();
@@ -38,7 +43,7 @@ test.describe('Проверка смены языка', () => {
     await expect(page.getByText('welcome', { exact: false })).toBeVisible();
   });
 
-  test('Проверка смены языка на русский', async ({ page }) => {
+  test('Смена языка на русский', async ({ page }) => {
     // Открываем список доступных языков.
     await expect(page.getByRole('button', { name: 'Русский' })).toBeVisible();
     await page.getByRole('button', { name: 'Русский' }).click();
@@ -68,6 +73,7 @@ test.describe('Проверка смены языка', () => {
 });
 
 test.describe('Тесты логина на портал', () => {
+  //Проверки входа
   test('Вход с валидным логином и валидным паролем', async ({ page }) => {
     // Заполняем поле логина или электронной почты.
     await page.getByRole('textbox', { name: 'Логин или e-mail' }).fill(env.APP_USER!);
@@ -178,7 +184,7 @@ test.describe('Тесты логина на портал', () => {
   });
 });
 
-test.describe('Првоерка флага "Запомнить меня"', () => {
+test.describe('Проверка флага "Запомнить меня"', () => {
   test('Сохранения сесии при включенном флажке «Запомнить меня»', async () => {
     if (!env.APP_USER || !env.APP_PASSWORD) {
       throw new Error('Для теста задайте APP_USER и APP_PASSWORD в .env');
