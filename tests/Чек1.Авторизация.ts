@@ -1,10 +1,16 @@
-import { test, expect } from '@playwright/test';
+import { chromium, test, expect } from '@playwright/test';
 import { env } from 'node:process';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
-test('Авторизация на сайте', async ({ page }) => {
-  // Открываем страницу авторизации.
+test.describe.configure({ mode: 'serial' });
+
+test.beforeEach(async ({ page }) => {
   await page.goto('https://forpasha.app.pryaniky.com/login');
+});
 
+test('Вход с валидным логином и валидным паролем', async ({ page }) => {
   // Проверяем, что отображается заголовок страницы авторизации.
   await expect(page.getByText('Добро пожаловать', { exact: true })).toBeVisible();
 
@@ -19,4 +25,6 @@ test('Авторизация на сайте', async ({ page }) => {
 
   // Проверяем переход на страницу dashboard.
   await expect(page).toHaveURL(/\/dash/);
+
+  await page.context().close();
 });
