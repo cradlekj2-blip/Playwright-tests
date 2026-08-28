@@ -25,6 +25,4 @@ test('Вход с валидным логином и валидным парол
 
   // Проверяем переход на страницу dashboard.
   await expect(page).toHaveURL(/\/dash/);
-
-  await page.context().close();
 });
