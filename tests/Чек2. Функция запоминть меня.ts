@@ -7,7 +7,7 @@ import { join } from 'node:path';
 const loginUrl = 'https://forpasha.app.pryaniky.com/login';
 const dashboardUrl = 'https://forpasha.app.pryaniky.com/dash';
 
-test('Сохраняет авторизацию при включенном флажке «Запомнить меня»', async () => {
+test('Проверка сохранения сесии при включенном флажке «Запомнить меня»', async () => {
   if (!env.APP_USER || !env.APP_PASSWORD) {
     throw new Error('Для теста задайте APP_USER и APP_PASSWORD в .env');
   }
